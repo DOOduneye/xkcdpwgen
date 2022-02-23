@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+
+import os, sys, secrets, getopt, random
+
+help_statement = open("help.txt").read()
+
+def load_words():
+    global valid_words
+    with open('words.txt') as word_file:
+        valid_words = list(set(word_file.read().split()))
+
+def word(length):
+    xkcdpw = ""
+    load_words()
+    for i in range(length):
+        xkcdpw += secrets.choice(valid_words) + ' '
+    return xkcdpw
+
+def cap(length, word):
+    word = word.strip().split(' ')
+    
+    if length > len(word):
+        length = len(word)
+    distinct_words = random.sample(word, length)
+    distinct_index = []
+
+    for w in distinct_words:
+        distinct_index.append(word.index(w))
+
+    for i in range(length):
+        word.insert(word.index(word[distinct_index[i]]), word[distinct_index[i]].title())
+        word.pop(word.index(word[distinct_index[i]])+1)
+
+    return ''.join(word)
+
+def genValue(length, word, opt):
+        word = list(''.join(word))
+        option = {"symbols":["(",")","~","!","@","#","$","%","^","&","*",".",":",";"],
+                "numbers":[1,2,3,4,5,6,7,8,9,0]}
+        for i in range(length):
+            word.insert(secrets.randbelow(len(word)), str(secrets.choice(option[opt])))
+        return ''.join(word)
+
+def main():
+    words = 4
+    caps = 0
+    symbols = 0
+    numbers = 0
+
+    argv = sys.argv[1:]
+
+    try:
+        opts, args = getopt.getopt(argv, "w:c:s:n:h",["words =","caps =","symbols=", "numbers=", "help="])
+
+    except ValueError:
+        print("illegal value")
+
+    for opt, arg in opts:
+        if opt in ['-w', '--words']:
+            if arg.isdigit():
+                words = int(arg)
+            else:
+                print(ValueError(f"illegal value: {arg}"))
+                sys.exit()
+        elif opt in ['-c', '--caps']:
+            if arg.isdigit():
+                caps = int(arg)
+            else:
+                print(ValueError(f"illegal value: {arg}"))
+        elif opt in ['-s', '--symbols']:
+            if arg.isdigit():
+                symbols = int(arg)
+            else:
+                print(ValueError(f"illegal value: {arg}"))
+        elif opt in ['-n', '--numbers']:
+            if arg.isdigit():
+                numbers = int(arg)
+            else:
+                print(ValueError(f"illegal value: {arg}"))
+        elif opt in ['-h', '--help']:
+            print(help_statement)
+            sys.exit()
+
+
+    password = genValue(symbols, genValue(numbers, cap(caps, word(words)), "numbers"), "symbols")
+
+    print(password)
+
+if __name__ == '__main__':
+  main()
