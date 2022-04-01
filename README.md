@@ -6,7 +6,7 @@ Based off the popular xkcd sketch, on how to not make passwords in the modern ag
 
 The original, and most common way to make secure passwords these days involves:
 
-	1) Really fucking unreadable passwords
+	1) Really unreadable passwords
 	2) Making them longer to make them even more unreadable 
 	
 And this is considered 'safe' and effective but is also maladaptive to what we are really trying to solve 
